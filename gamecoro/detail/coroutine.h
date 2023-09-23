@@ -16,7 +16,7 @@ namespace gamecoro
 		using promise_type = Promise<Coroutine>;
 		using Handle = std::coroutine_handle<promise_type>;
 
-		Coroutine() = default;
+		Coroutine() = delete;
 		Coroutine(Handle h) : handle(h) {}
 
 		Coroutine(const Coroutine&) = delete;
