@@ -1,6 +1,7 @@
 #pragma once
 
 #include "wait_state.h"
+#include "awaitables.h"
 
 #include <coroutine>
 
@@ -22,5 +23,8 @@ namespace gamecoro
 		std::suspend_always final_suspend() noexcept { return {}; }
 		void return_void() {}
 		void unhandled_exception() {}
+
+		TimerAwaitable<Promise> await_transform(TimeDuration time) { return { time }; }
+		auto await_transform(auto&& v) { return v; }
 	};
 }

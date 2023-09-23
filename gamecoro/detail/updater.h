@@ -3,6 +3,7 @@
 #include "coroutine.h"
 
 #include <vector>
+#include <algorithm>
 
 namespace gamecoro
 {
@@ -14,10 +15,15 @@ namespace gamecoro
 		Updater(const Updater&) = delete;
 		Updater& operator=(const Updater&) = delete;
 
+		explicit Updater(Coroutine&& coro)
+		{
+			Start(std::move(coro));
+		}
+
 		void Start(Coroutine&& coro)
 		{
 			coro.SetUpdater(this);
-			coro.GetHandle().resume();
+			coro.Resume();
 			started.push_back(std::move(coro));
 		}
 
@@ -45,7 +51,7 @@ namespace gamecoro
 
 		void RemoveFinishedCoroutines()
 		{
-			auto is_running = [](Coroutine& coro) { return !coro.GetHandle().done(); };
+			auto is_running = [](const Coroutine& coro) { return !coro.Done(); };
 			auto itr = std::partition(running.begin(), running.end(), is_running);
 
 			finished.assign(std::make_move_iterator(itr), std::make_move_iterator(running.end()));

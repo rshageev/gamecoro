@@ -30,4 +30,22 @@ namespace gamecoro
 	private:
 		std::coroutine_handle<P> handle;
 	};
+
+	template<class P>
+	struct TimerAwaitable
+	{
+		TimeDuration time;
+
+		bool await_ready() const noexcept
+		{
+			return time <= ZeroTime;
+		}
+
+		void await_suspend(std::coroutine_handle<P> h)
+		{
+			h.promise().wait_state = WaitTimer{ time };
+		}
+
+		void await_resume() const noexcept {}
+	};
 }
