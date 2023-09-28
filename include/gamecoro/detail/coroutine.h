@@ -30,7 +30,6 @@ namespace gamecoro
 		Handle Run(Updater* updater) &&;
 		Handle GetHandle() { return handle; }
 
-		void Update(float dt);
 		bool Done() const;
 
 	private:
