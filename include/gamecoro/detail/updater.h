@@ -18,7 +18,7 @@ namespace gamecoro
 		explicit Updater(Coroutine&& coro);
 
 		void Start(Coroutine&& coro);
-		void Update(TimeDuration dt);
+		void Update(float dt);
 
 	protected:
 		std::vector<Coroutine> started;

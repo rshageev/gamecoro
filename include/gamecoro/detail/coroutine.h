@@ -57,7 +57,7 @@ namespace gamecoro
 			return !handle || handle.done();
 		}
 
-		void Update(TimeDuration dt);
+		void Update(float dt);
 
 	private:
 		Handle handle;

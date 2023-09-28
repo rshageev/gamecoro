@@ -34,11 +34,11 @@ namespace gamecoro
 	template<class P>
 	struct TimerAwaitable
 	{
-		TimeDuration time;
+		float time;
 
 		bool await_ready() const noexcept
 		{
-			return time <= ZeroTime;
+			return time <= 0.0f;
 		}
 
 		void await_suspend(std::coroutine_handle<P> h)

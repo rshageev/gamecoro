@@ -17,7 +17,7 @@ namespace gamecoro
 		started.push_back(std::move(coro));
 	}
 
-	void Updater::Update(TimeDuration dt)
+	void Updater::Update(float dt)
 	{
 		RunStartedCoroutines();
 

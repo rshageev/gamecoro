@@ -2,42 +2,17 @@
 
 #include <variant>
 
-
 namespace gamecoro
 {
-	using TimeDuration = float;
-	inline constexpr TimeDuration ZeroTime = 0.0f;
-
-
-
 	struct WaitNextFrame
 	{
-		TimeDuration dt = ZeroTime;
+		float dt = 0.0f;
 	};
 
 	struct WaitTimer
 	{
-		TimeDuration remaining = ZeroTime;
+		float remaining = 0.0f;
 	};
 
 	using WaitState = std::variant<WaitNextFrame, WaitTimer>;
-
-
-
-	struct NeedResume
-	{
-		TimeDuration dt = ZeroTime;
-
-		bool operator() (WaitNextFrame& wait_state) const
-		{
-			wait_state.dt = dt;
-			return true;
-		}
-
-		bool operator() (WaitTimer& wait_state) const
-		{
-			wait_state.remaining -= dt;
-			return wait_state.remaining <= ZeroTime;
-		}
-	};
 }
