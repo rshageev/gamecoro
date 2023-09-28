@@ -54,3 +54,53 @@ TEST_CASE("Await timer")
 	}
 	CHECK(finished);
 }
+
+TEST_CASE("Await coroutine")
+{
+	static constexpr int frames_count = 4;
+
+	bool finished = false;
+
+	auto wait_frames = [](int frames) -> gc::Coroutine {
+		for (int i = 0; i < frames; ++i) {
+			co_await gc::NextFrame{};
+		}
+	};
+
+	SECTION("Await single")
+	{
+		auto wait_coro = [&]() -> gc::Coroutine {
+			co_await wait_frames(frames_count);
+			finished = true;
+		};
+
+		gc::Updater updater{ wait_coro() };
+
+		for (int i = 0; i < frames_count - 1; ++i) {
+			updater.Update(0.0f);
+		}
+		CHECK(!finished);
+		updater.Update(0.0f);
+		CHECK(finished);
+	}
+
+	SECTION("Await sequence")
+	{
+		auto wait_coro = [&]() -> gc::Coroutine {
+			co_await wait_frames(frames_count);
+			co_await wait_frames(frames_count);
+			finished = true;
+		};
+
+		gc::Updater updater{ wait_coro() };
+
+		// next coroutine is started only on the next frame after previous
+		// has finished, and because of that we have +1 frame here
+		for (int i = 0; i < ((frames_count * 2) + 1) - 1; ++i) {
+			updater.Update(0.0f);
+		}
+		CHECK(!finished);
+		updater.Update(0.0f);
+		CHECK(finished);
+	}
+}

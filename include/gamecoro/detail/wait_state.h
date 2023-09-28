@@ -1,6 +1,7 @@
 #pragma once
 
 #include <variant>
+#include <coroutine>
 
 namespace gamecoro
 {
@@ -14,5 +15,10 @@ namespace gamecoro
 		float remaining = 0.0f;
 	};
 
-	using WaitState = std::variant<WaitNextFrame, WaitTimer>;
+	struct WaitCoroutine
+	{
+		std::coroutine_handle<> handle;
+	};
+
+	using WaitState = std::variant<WaitNextFrame, WaitTimer, WaitCoroutine>;
 }

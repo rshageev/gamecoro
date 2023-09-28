@@ -30,5 +30,8 @@ namespace gamecoro
 		NextFrameAwaitable<Promise> await_transform(NextFrame&&) {
 			return {};
 		}
+		CoroutineAwaitable<Promise> await_transform(CoroInterface&& coro) {
+			return { std::move(coro).Run(updater) };
+		}
 	};
 }

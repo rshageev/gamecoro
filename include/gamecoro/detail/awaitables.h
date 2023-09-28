@@ -50,4 +50,22 @@ namespace gamecoro
 
 		void await_resume() const noexcept {}
 	};
+
+	template<class P>
+	struct CoroutineAwaitable
+	{
+		std::coroutine_handle<> handle;
+
+		bool await_ready() const noexcept
+		{
+			return !handle || handle.done();
+		}
+
+		void await_suspend(std::coroutine_handle<P> h)
+		{
+			h.promise().wait_state = WaitCoroutine{ handle };
+		}
+
+		void await_resume() const noexcept {}
+	};
 }

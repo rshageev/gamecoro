@@ -25,11 +25,10 @@ namespace gamecoro
 		Coroutine(Coroutine&& rhs);
 		Coroutine& operator=(Coroutine&& rhs);
 
-		Coroutine(Coroutine&& rhs, Updater* updater);
-
 		~Coroutine();
 
-		void Run(Updater* updater) &&;
+		Handle Run(Updater* updater) &&;
+		Handle GetHandle() { return handle; }
 
 		void Update(float dt);
 		bool Done() const;

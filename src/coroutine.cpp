@@ -18,6 +18,11 @@ namespace gamecoro
 			wait_state.remaining -= dt;
 			return wait_state.remaining <= 0.0f;
 		}
+
+		bool operator() (const WaitCoroutine& wait_state) const noexcept
+		{
+			return !wait_state.handle || wait_state.handle.done();
+		}
 	};
 
 	Coroutine::Coroutine(Coroutine&& rhs)
@@ -33,16 +38,11 @@ namespace gamecoro
 		return *this;
 	}
 
-	Coroutine::Coroutine(Coroutine&& rhs, Updater* updater)
-		: Coroutine(std::move(rhs))
+	Coroutine::Handle Coroutine::Run(Updater* updater) &&
 	{
-		handle.promise().updater = updater;
-		handle.resume();
-	}
-
-	void Coroutine::Run(Updater* updater) &&
-	{
+		auto h = handle;
 		updater->Start(std::move(*this));
+		return h;
 	}
 
 	Coroutine::~Coroutine()
