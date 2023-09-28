@@ -62,7 +62,4 @@ namespace gamecoro
 	private:
 		Handle handle;
 	};
-
-
-	using NextFrame = NextFrameAwaitable<Coroutine::promise_type>;
 }

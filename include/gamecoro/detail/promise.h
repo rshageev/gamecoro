@@ -24,7 +24,11 @@ namespace gamecoro
 		void return_void() {}
 		void unhandled_exception() {}
 
-		TimerAwaitable<Promise> await_transform(float time) { return { time }; }
-		auto await_transform(auto&& v) { return v; }
+		TimerAwaitable<Promise> await_transform(float time) {
+			return { time };
+		}
+		NextFrameAwaitable<Promise> await_transform(NextFrame&&) {
+			return {};
+		}
 	};
 }

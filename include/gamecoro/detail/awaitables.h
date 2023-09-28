@@ -6,6 +6,8 @@
 
 namespace gamecoro
 {
+	struct NextFrame {};
+
 	template<class P>
 	class NextFrameAwaitable
 	{
