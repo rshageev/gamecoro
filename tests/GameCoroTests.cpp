@@ -1,6 +1,6 @@
 #include "catch_amalgamated.hpp"
 
-#include "gamecoro.h"
+#include "gamecoro/gamecoro.h"
 
 
 namespace gc = gamecoro;

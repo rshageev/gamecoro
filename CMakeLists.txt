@@ -1,13 +1,13 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.15)
 
 project(GameCoro)
 
-# Language standard
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-
-add_library(GameCoro INTERFACE)
-target_include_directories(GameCoro INTERFACE gamecoro/)
+add_library(GameCoro STATIC
+    src/coroutine.cpp
+    src/updater.cpp
+)
+target_compile_features(GameCoro PUBLIC cxx_std_20)
+target_include_directories(GameCoro PRIVATE include/gamecoro)
+target_include_directories(GameCoro PUBLIC include)
 
 add_subdirectory(tests)
