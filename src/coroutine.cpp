@@ -1,4 +1,5 @@
 #include "detail/coroutine.h"
+#include "detail/updater.h"
 
 namespace gamecoro
 {
@@ -19,6 +20,42 @@ namespace gamecoro
 		}
 	};
 
+	Coroutine::Coroutine(Coroutine&& rhs)
+		: handle(std::exchange(rhs.handle, nullptr))
+	{}
+
+	Coroutine& Coroutine::operator=(Coroutine&& rhs)
+	{
+		if (handle) {
+			handle.destroy();
+		}
+		handle = std::exchange(rhs.handle, nullptr);
+		return *this;
+	}
+
+	Coroutine::Coroutine(Coroutine&& rhs, Updater* updater)
+		: Coroutine(std::move(rhs))
+	{
+		handle.promise().updater = updater;
+		handle.resume();
+	}
+
+	void Coroutine::Run(Updater* updater) &&
+	{
+		updater->Start(std::move(*this));
+	}
+
+	Coroutine::~Coroutine()
+	{
+		if (handle) {
+			handle.destroy();
+		}
+	}
+
+	bool Coroutine::Done() const
+	{
+		return !handle || handle.done();
+	}
 
 	void Coroutine::Update(float dt)
 	{

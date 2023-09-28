@@ -9,12 +9,9 @@ namespace gamecoro
 
 	void Updater::Start(Coroutine&& coro)
 	{
-		coro.SetUpdater(this);
-		coro.Resume();
-
 		// adding fresh coroutines into separate vector, because they could be added
 		// by running coroutines, while we are iterating over `running` vector
-		started.push_back(std::move(coro));
+		started.emplace_back(std::move(coro), this);
 	}
 
 	void Updater::Update(float dt)

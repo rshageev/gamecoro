@@ -22,42 +22,17 @@ namespace gamecoro
 		Coroutine(const Coroutine&) = delete;
 		Coroutine operator=(const Coroutine&) = delete;
 
-		Coroutine(Coroutine&& rhs)
-			: handle(std::exchange(rhs.handle, nullptr))
-		{}
+		Coroutine(Coroutine&& rhs);
+		Coroutine& operator=(Coroutine&& rhs);
 
-		Coroutine& operator=(Coroutine&& rhs)
-		{
-			if (handle) {
-				handle.destroy();
-			}
-			handle = std::exchange(rhs.handle, nullptr);
-			return *this;
-		}
+		Coroutine(Coroutine&& rhs, Updater* updater);
 
-		~Coroutine()
-		{
-			if (handle) {
-				handle.destroy();
-			}
-		}
+		~Coroutine();
 
-		void SetUpdater(Updater* updater)
-		{
-			handle.promise().updater = updater;
-		}
-
-		void Resume()
-		{
-			handle.resume();
-		}
-
-		bool Done() const
-		{
-			return !handle || handle.done();
-		}
+		void Run(Updater* updater) &&;
 
 		void Update(float dt);
+		bool Done() const;
 
 	private:
 		Handle handle;
