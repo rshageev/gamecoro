@@ -24,6 +24,7 @@ namespace gamecoro
 		void return_void() {}
 		void unhandled_exception() {}
 
+
 		TimerAwaitable<Promise> await_transform(float time) {
 			return { time };
 		}
@@ -32,6 +33,12 @@ namespace gamecoro
 		}
 		CoroutineAwaitable<Promise> await_transform(CoroInterface&& coro) {
 			return { std::move(coro).Run(updater) };
+		}
+
+
+		std::suspend_never yield_value(CoroInterface&& coro) {
+			std::move(coro).Run(updater);
+			return {};
 		}
 	};
 }

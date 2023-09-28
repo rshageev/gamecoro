@@ -104,3 +104,30 @@ TEST_CASE("Await coroutine")
 		CHECK(finished);
 	}
 }
+
+TEST_CASE("Spawning parallel coroutines")
+{
+	static constexpr int frame_count1 = 3;
+	static constexpr int frame_count2 = 5;
+
+	int counter = 0;
+
+	auto inc_counter = [&](int cnt) -> gc::Coroutine {
+		for (int i = 0; i < cnt; ++i) {
+			++counter;
+			co_await gc::NextFrame{};
+		}
+	};
+
+	auto test = [&]() -> gc::Coroutine {
+		co_yield inc_counter(frame_count1);
+		co_yield inc_counter(frame_count2);
+	};
+
+	gc::Updater updater{ test() };
+	for (int i = 0; i < std::max(frame_count1, frame_count2); ++i) {
+		updater.Update(0.1f);
+	}
+
+	CHECK(counter == (frame_count1 + frame_count2));
+}
